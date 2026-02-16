@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "nazwa": "RTS Printed or Wire Antenna",
+    "parametry": { "down_limit": 40, "upper_limit": 100, "generator": -54 }
+  },
+  {
+    "id": 2,
+    "nazwa": "RTS Paring Main Suplly Antenna",
+    "parametry": { "down_limit": 48, "upper_limit": 250, "generator": -46 }
+  },
+  {
+    "id": 3,
+    "nazwa": "RTX Printed or Wire Antenna (Korea & Japan no autonomous)",
+    "parametry": { "down_limit": 40, "upper_limit": 100, "generator": -54 }
+  }
+]
