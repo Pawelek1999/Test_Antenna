@@ -46,7 +46,7 @@ def run_antenna_test(state: TestState):
     print("Rozpoczynanie testu anteny (30s)...")
     
     # Pętla symulująca pracę, sprawdzająca co sekundę sygnał zatrzymania
-    for _ in range(30):
+    for _ in range(10):  # 10 sekund symulacji
         if not state.is_active():
             print("Test zatrzymany przez użytkownika.")
             # Nie zapisujemy pliku, test przerwany

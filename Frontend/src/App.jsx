@@ -7,6 +7,10 @@ import DifferenceTable from "./Components/DifferenceTable.jsx";
 import DistanceInput from "./Components/DistanceInput.jsx";
 import PdfButton from "./Components/PdfButton.jsx";
 import TestControl from "./Components/TestControl.jsx";
+<<<<<<< HEAD
+=======
+import somfyLogo from "./assets/Somfy_Logo.png";
+>>>>>>> f66bc84c21a712048cbcc39241ab10ef6a651822
 
 
 function App() {
@@ -116,6 +120,7 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
   useEffect(() => { return () => clearInterval(pollingInterval.current); }, []);
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen bg-slate-100 p-8">
 
       <div className="flex justify-end">
@@ -149,6 +154,63 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
           handleStopTest={handleStopTest} 
           isTesting={isTesting} 
         />
+=======
+    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans py-10 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white">
+
+      <div className="max-w-7xl mx-auto flex justify-between items-center mb-6">
+        <img src={somfyLogo} alt="Somfy" className="h-20" />
+        <div className="print:hidden">
+          <PdfButton />
+        </div>
+      </div>
+
+      <div id="printable" className="max-w-7xl mx-auto space-y-8 print:max-w-none print:w-full print:m-0">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-[#FDB913] p-6 space-y-6 print:break-inside-avoid print:shadow-none print:border-none print:p-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <AntenaChoice 
+                antennasData={antennasData} 
+                selectedAntena={selectedAntena} 
+                onAntenaSelect={setSelectedAntena} 
+              />
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <FrequencyChoice 
+                frequenciesData={frequenciesData} 
+                selectedFrequency={selectedFrequency} 
+                onFrequencySelect={setSelectedFrequency}
+              />
+            </div>
+          </div>
+          <div className="border-t border-gray-100 pt-6">
+            <DistanceInput 
+              distance={distance} 
+              setDistance={setDistance} 
+            />
+          </div>
+        </div>
+
+        <div className="print:break-before-page">
+          <Table 
+            gen_data={testResults} 
+            freq_data={selectedFrequency}
+            distance={distance}
+          />
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start print:break-inside-avoid">
+          <DifferenceTable gen_data={testResults} />
+          <ChartAntena selectedAntena={selectedAntena} gen_data={testResults} />
+        </div>
+
+        <div className="print:hidden">
+          <TestControl 
+            handleStartTest={handleStartTest} 
+            handleStopTest={handleStopTest} 
+            isTesting={isTesting} 
+          />
+        </div>
+>>>>>>> f66bc84c21a712048cbcc39241ab10ef6a651822
       </div>
     </div>
 
