@@ -25,40 +25,6 @@ function Table({ gen_data, freq_data, distance }) {
   const freq = Number.isFinite(freqMHz) ? freqMHz : NaN; // convert MHz -> Hz
   const wireLoss = parseNum(freq_data?.wire_loss_db, 0);
   const antFactor = parseNum(freq_data?.antenna_factor_dbm_1, 0);
-<<<<<<< HEAD
-
-  return (
-    <div className="p-6 overflow-x-auto bg-white">
-      <h2 className="text-lg font-bold mb-4 underline">Sensitivity values for activation order:</h2>
-      <table className="min-w-full border-collapse border border-black text-sm text-center">
-        <thead>
-          {/* Poziom 1 */}
-          <tr>
-            <th className="border border-black p-2" rowSpan={3}>Angle</th>
-            <th className="border border-black p-2" colSpan={4}>Generator values</th>
-            <th className="border border-black p-2" colSpan={4}>Sensitivity value for "activation" order</th>
-          </tr>
-          {/* Poziom 2 */}
-          <tr>
-            <th className="border border-black p-2" colSpan={2}>Polar H</th>
-            <th className="border border-black p-2" colSpan={2}>Polar V</th>
-            <th className="border border-black p-2" colSpan={2}>Polar H</th>
-            <th className="border border-black p-2" colSpan={2}>Polar V</th>
-          </tr>
-          {/* Poziom 3 */}
-          <tr className="text-[11px]">
-            <th className="border border-black p-1">Activation order</th>
-            <th className="border border-black p-1 italic">Stop order**</th>
-            <th className="border border-black p-1">Activation order</th>
-            <th className="border border-black p-1 italic">Stop order**</th>
-            <th className="border border-black p-1">E(dBµV/m)</th>
-            <th className="border border-black p-1">E(µV/m)</th>
-            <th className="border border-black p-1">E(dBµV/m)</th>
-            <th className="border border-black p-1">E(µV/m)</th>
-          </tr>
-        </thead>
-        <tbody>
-=======
   const distanceNum = parseNum(distance);
   const valid = Number.isFinite(freq) && freq > 0 && Number.isFinite(distanceNum) && distanceNum > 0;
 
@@ -152,7 +118,6 @@ function Table({ gen_data, freq_data, distance }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
->>>>>>> f66bc84c21a712048cbcc39241ab10ef6a651822
           {gen_data ? (gen_data.map((row, index) => {
             const genH = parseNum(row.genPolarH_act);
             const genV = parseNum(row.genPolarV_act);
@@ -171,30 +136,6 @@ function Table({ gen_data, freq_data, distance }) {
 
             return (
               <tr key={index}>
-<<<<<<< HEAD
-                <td className="border border-black p-2 font-semibold bg-gray-50">{row.angle}</td>
-                <td className="border border-black p-2 bg-gray-300">{row.genPolarH_act}</td>
-                <td className="border border-black p-2 bg-gray-300">{row.genPolarH_stop}</td>
-                <td className="border border-black p-2 bg-gray-300">{row.genPolarV_act}</td>
-                <td className="border border-black p-2 bg-gray-300">{row.genPolarV_stop}</td>
-                <td className="border border-black p-2">{formatOrDash(sensH_db)} dBµV/m</td>
-                <td className="border border-black p-2">{formatOrDash(sensH_uv)} µV/m</td>
-                <td className="border border-black p-2">{formatOrDash(sensV_db)} dBµV/m</td>
-                <td className="border border-black p-2">{formatOrDash(sensV_uv)} µV/m</td>
-              </tr>
-            );
-            })
-            
-          ) : (
-            <tr>
-              <td className="border border-black p-2 italic" colSpan={9}>No data available</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-=======
                 <td className="border border-gray-300 p-2 font-semibold bg-gray-50 text-gray-900 print:p-1">{row.angle}</td>
                 <td className="border border-gray-300 p-2 bg-gray-50 text-gray-700 print:p-1">{row.genPolarH_act}</td>
                 <td className="border border-gray-300 p-2 bg-gray-50 text-gray-700 print:p-1">{row.genPolarH_stop}</td>
@@ -224,7 +165,6 @@ function Table({ gen_data, freq_data, distance }) {
       </div>
     </div>
   ); 
->>>>>>> f66bc84c21a712048cbcc39241ab10ef6a651822
 };
 
 export default Table;

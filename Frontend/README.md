@@ -1,8 +1,5 @@
-1. Na juttro, zrobic wybieranie anteny z pliku .json
+biblioteki do exela  npm install exceljs file-saver react-dropzone
 
-2. Narysowac ten okragly diagram
-
-3. wstawic tabelke z wartosciami z .json
 
 npm install chart.js react-chartjs-2
 # React + Vite

@@ -7,10 +7,7 @@ import DifferenceTable from "./Components/DifferenceTable.jsx";
 import DistanceInput from "./Components/DistanceInput.jsx";
 import PdfButton from "./Components/PdfButton.jsx";
 import TestControl from "./Components/TestControl.jsx";
-<<<<<<< HEAD
-=======
 import somfyLogo from "./assets/Somfy_Logo.png";
->>>>>>> f66bc84c21a712048cbcc39241ab10ef6a651822
 
 
 function App() {
@@ -120,41 +117,6 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
   useEffect(() => { return () => clearInterval(pollingInterval.current); }, []);
 
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-slate-100 p-8">
-
-      <div className="flex justify-end">
-        <PdfButton />
-      </div>
-
-      <div id="printable">
-        <AntenaChoice 
-          antennasData={antennasData} 
-          selectedAntena={selectedAntena} 
-          onAntenaSelect={setSelectedAntena} 
-        />
-        <FrequencyChoice 
-          frequenciesData={frequenciesData} 
-          selectedFrequency={selectedFrequency} 
-          onFrequencySelect={setSelectedFrequency}
-        />
-        <DistanceInput 
-          distance={distance} 
-          setDistance={setDistance} 
-        />
-        <Table 
-          gen_data={testResults} 
-          freq_data={selectedFrequency}
-          distance={distance}
-        />
-        <DifferenceTable />
-        <ChartAntena selectedAntena={selectedAntena} />
-        <TestControl 
-          handleStartTest={handleStartTest} 
-          handleStopTest={handleStopTest} 
-          isTesting={isTesting} 
-        />
-=======
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans py-10 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white">
 
       <div className="max-w-7xl mx-auto flex justify-between items-center mb-6">
@@ -210,7 +172,6 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
             isTesting={isTesting} 
           />
         </div>
->>>>>>> f66bc84c21a712048cbcc39241ab10ef6a651822
       </div>
     </div>
 
