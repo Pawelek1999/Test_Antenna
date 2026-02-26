@@ -1,5 +1,8 @@
 biblioteki do exela  npm install exceljs file-saver react-dropzone
 
+zainstalowalem openpyxl i python-mltipart do obslugi plikow excelowych i przesylania plikow
+
+
 
 npm install chart.js react-chartjs-2
 # React + Vite

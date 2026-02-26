@@ -1,9 +1,11 @@
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 import time
 import json
 import os
+import io
+import openpyxl
 from testowy import run_antenna_test  # Import funkcji testowej z testowy.py
 from test_state import TestState, RESULT_FILE
 
@@ -131,3 +133,46 @@ async def download_data():
     with open(RESULT_FILE, "r") as f:
         data = json.load(f)
     return data
+
+@app.post("/drag-excel")
+async def generate_excel(file: UploadFile = File(...)):
+    # 1. Sprawdź czy są wyniki testu na serwerze
+    if not os.path.exists(RESULT_FILE):
+        raise HTTPException(status_code=404, detail="Brak wyników testu do wyeksportowania.")
+    
+    # 2. Wczytaj wyniki z pliku JSON
+    with open(RESULT_FILE, "r") as f:
+        test_results = json.load(f)
+
+    try:
+        # 3. Wczytaj przesłany szablon Excela do pamięci (bez zapisu na dysk)
+        content = await file.read()
+        workbook = openpyxl.load_workbook(io.BytesIO(content))
+        sheet = workbook.worksheets[0] # Wybierz pierwszy arkusz
+        
+        # 4. Uzupełnij dane
+        start_row = 22
+        for index, row_data in enumerate(test_results):
+            current_row = start_row + index
+            # Mapowanie kolumn: E=5, F=6, G=7, H=8
+            sheet.cell(row=current_row, column=5).value = row_data.get("genPolarH_act")
+            sheet.cell(row=current_row, column=6).value = row_data.get("genPolarH_stop")
+            sheet.cell(row=current_row, column=7).value = row_data.get("genPolarV_act")
+            sheet.cell(row=current_row, column=8).value = row_data.get("genPolarV_stop")
+
+        # 5. Zapisz zmodyfikowany plik do bufora pamięci
+        output = io.BytesIO()
+        workbook.save(output)
+        output.seek(0)
+        
+        # 6. Zwróć plik jako strumień
+        filename = f"Raport_Anteny_{int(time.time())}.xlsx"
+        return StreamingResponse(
+            output, 
+            media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            headers={'Content-Disposition': f'attachment; filename="{filename}"'}
+        )
+
+    except Exception as e:
+        print(f"Błąd generowania Excela: {e}")
+        raise HTTPException(status_code=500, detail=f"Błąd serwera: {str(e)}")

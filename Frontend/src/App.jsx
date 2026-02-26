@@ -8,6 +8,7 @@ import DistanceInput from "./Components/DistanceInput.jsx";
 import PdfButton from "./Components/PdfButton.jsx";
 import TestControl from "./Components/TestControl.jsx";
 import somfyLogo from "./assets/Somfy_Logo.png";
+import ExcelExportTool from "./Components/ExelExportTool.jsx";
 
 
 function App() {
@@ -134,6 +135,10 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
                 antennasData={antennasData} 
                 selectedAntena={selectedAntena} 
                 onAntenaSelect={setSelectedAntena} 
+              />
+            </div>
+             <div className="bg-gray-50 rounded-lg p-4">
+              <ExcelExportTool testResults={testResults} 
               />
             </div>
             <div className="bg-gray-50 rounded-lg p-4">

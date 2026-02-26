@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { Download, FileUp, CheckCircle2 } from 'lucide-react'; // Opcjonalne ikony
 
-const ExcelExportTool = ({ dataFromJson }) => {
+const ExcelExportTool = ({ testResults }) => {
   const [templateFile, setTemplateFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -16,41 +15,31 @@ const ExcelExportTool = ({ dataFromJson }) => {
 
     const generateExcel = async () => {
     if (!templateFile) return;
+    if (!testResults) {
+      alert("Brak wyników do wyeksportowania.");
+      return;
+    }
     setIsProcessing(true);
 
     try {
-        const workbook = new ExcelJS.Workbook();
-        const arrayBuffer = await templateFile.arrayBuffer();
-        await workbook.xlsx.load(arrayBuffer);
-        
-        const worksheet = workbook.getWorksheet(1);
+        const formData = new FormData();
+        formData.append('file', templateFile);
 
-        // Iterujemy po danych z JSONa
-        dataFromJson.forEach((row, index) => {
-        // Startujemy od wiersza 22, więc dodajemy index do 22
-        const currentRow = 22 + index;
-
-        // Mapowanie kluczy z JSON do kolumn E, F, G, H
-        worksheet.getCell(`E${currentRow}`).value = row.genPolarH_act;
-        worksheet.getCell(`F${currentRow}`).value = row.genPolarH_stop;
-        worksheet.getCell(`G${currentRow}`).value = row.genPolarV_act;
-        worksheet.getCell(`H${currentRow}`).value = row.genPolarV_stop;
-
-        // Opcjonalnie: upewnij się, że formatowanie jest liczbą, by formuły (np. Average) działały
-        const cells = [`E${currentRow}`, `F${currentRow}`, `G${currentRow}`, `H${currentRow}`];
-        cells.forEach(ref => {
-            worksheet.getCell(ref).numFmt = '0'; // Formatowanie jako liczba całkowita
-        });
+        const response = await fetch('http://localhost:8000/generate-excel', {
+            method: 'POST',
+            body: formData,
         });
 
-        // Automatyczne przeliczenie formuł (jak Average of Rx sensitivity w wierszu 34)
-        // Uwaga: ExcelJS nie przelicza formuł sam, zrobi to Excel po otwarciu pliku.
+        if (!response.ok) {
+            throw new Error(`Błąd serwera: ${response.statusText}`);
+        }
 
-        const buffer = await workbook.xlsx.writeBuffer();
-        saveAs(new Blob([buffer]), `Raport_Anteny_${Date.now()}.xlsx`);
+        const blob = await response.blob();
+        saveAs(blob, `Raport_Anteny_${Date.now()}.xlsx`);
         
     } catch (error) {
         console.error("Błąd eksportu:", error);
+        alert(`Wystąpił błąd podczas eksportu: ${error.message}`);
     } finally {
         setIsProcessing(false);
     }
