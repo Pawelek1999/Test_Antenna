@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { saveAs } from 'file-saver';
 import { Download, FileUp, CheckCircle2 } from 'lucide-react'; // Opcjonalne ikony
@@ -7,10 +7,40 @@ const ExcelExportTool = ({ testResults }) => {
   const [templateFile, setTemplateFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const onDrop = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+    setTemplateFile(file);
+
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Automatyczna aktualizacja częstotliwości po upuszczeniu pliku
+      fetch('http://localhost:8000/update-frequencies-from-excel', {
+        method: 'POST',
+        body: formData,
+      })
+        .then(async (res) => {
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.detail || 'Wystąpił błąd podczas przetwarzania pliku.');
+          }
+          return data;
+        })
+        .then((data) => {
+          alert(`${data.message}\nOdśwież stronę (F5), aby zobaczyć nowe częstotliwości na liście.`);
+        })
+        .catch((err) => {
+          console.error("Błąd aktualizacji częstotliwości:", err);
+          alert(`Nie udało się zaktualizować częstotliwości:\n${err.message}`);
+        });
+    }
+  }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] },
     multiple: false,
-    onDrop: (acceptedFiles) => setTemplateFile(acceptedFiles[0]),
+    onDrop,
   });
 
     const generateExcel = async () => {
@@ -25,7 +55,7 @@ const ExcelExportTool = ({ testResults }) => {
         const formData = new FormData();
         formData.append('file', templateFile);
 
-        const response = await fetch('http://localhost:8000/generate-excel', {
+        const response = await fetch('http://localhost:8000/drag-excel', {
             method: 'POST',
             body: formData,
         });

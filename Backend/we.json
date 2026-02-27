@@ -1,0 +1,92 @@
+[
+  {
+    "sheet": 1,
+    "id": 1,
+    "date": "27.06.2024",
+    "description": "EMC sensitivity sweep test for 869.850 MHz band",
+    "test_params": {
+      "frequency_hz": 869850000,
+      "angles": [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+      "polarizations": ["V", "H"]
+    },
+    "hardware_config": {
+      "analog_channel": 3,
+      "voltage_threshold_v": 4.5,
+      "safe_stop_power_dbm": -20.0
+    },
+    "runtime_params": {
+      "start_power_dbm": -50.0,
+      "end_power_dbm": 10.0,
+      "power_step_db": 1.0,
+      "start_table_position": 0,
+      "start_malt_height": 150,
+      "silent_search_reduction_db": 5.0
+    }
+  },
+  {
+    "id": 1,
+    "description": "EMC sensitivity sweep test for 869.850 MHz band",
+    "test_params": {
+      "frequency_hz": 869850000,
+      "angles": [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+      "polarizations": ["V", "H"]
+    },
+    "hardware_config": {
+      "analog_channel": 3,
+      "voltage_threshold_v": 4.5,
+      "safe_stop_power_dbm": -20.0
+    },
+    "runtime_params": {
+      "start_power_dbm": -50.0,
+      "end_power_dbm": 10.0,
+      "power_step_db": 1.0,
+      "start_table_position": 0,
+      "start_malt_height": 150,
+      "silent_search_reduction_db": 5.0
+    }
+  }
+  ,{
+    "id": 2,
+    "description": "EMC sensitivity sweep test for 869.850 MHz band",
+    "test_params": {
+      "frequency_hz": 869850000,
+      "angles": [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+      "polarizations": ["V", "H"]
+    },
+    "hardware_config": {
+      "analog_channel": 3,
+      "voltage_threshold_v": 4.5,
+      "safe_stop_power_dbm": -20.0
+    },
+    "runtime_params": {
+      "start_power_dbm": -50.0,
+      "end_power_dbm": 10.0,
+      "power_step_db": 1.0,
+      "start_table_position": 0,
+      "start_malt_height": 150,
+      "silent_search_reduction_db": 5.0
+    }
+  },{
+    "id": 3,
+    "description": "EMC sensitivity sweep test for 869.850 MHz band",
+    "test_params": {
+      "frequency_hz": 869850000,
+      "angles": [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330],
+      "polarizations": ["V", "H"]
+    },
+    "hardware_config": {
+      "analog_channel": 3,
+      "voltage_threshold_v": 4.5,
+      "safe_stop_power_dbm": -20.0
+    },
+    "runtime_params": {
+      "start_power_dbm": -50.0,
+      "end_power_dbm": 10.0,
+      "power_step_db": 1.0,
+      "start_table_position": 0,
+      "start_malt_height": 150,
+      "silent_search_reduction_db": 5.0
+    }
+  }
+
+]

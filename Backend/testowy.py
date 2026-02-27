@@ -1,6 +1,7 @@
 from test_state import TestState, RESULT_FILE
 import time
 import json
+from drivers.test_calculation.sensitivity_value import calculate_sensitivity
 
 
 def run_antenna_test(state: TestState):
@@ -67,6 +68,24 @@ def run_antenna_test(state: TestState):
   }
     ]
     
+    # Parametry do obliczeń (Wartości przykładowe, powinny być zgodne z ustawieniami testu)
+    calc_freq = 409.9875       # MHz
+    calc_distance = 3.0     # m
+    calc_wire_loss = 4.79    # dB
+    calc_ant_factor = 17.8   # dB/m
+
+    # Obliczanie sensitivity i dodawanie do wyników
+    for row in data:
+        # Dla polaryzacji H (Activation)
+        h_db, h_uv = calculate_sensitivity(row.get("genPolarH_act"), calc_freq, calc_distance, calc_wire_loss, calc_ant_factor)
+        row["sens_genPolarH_act_db"] = h_db
+        row["sens_genPolarH_act_uv"] = h_uv
+
+        # Dla polaryzacji V (Activation)
+        v_db, v_uv = calculate_sensitivity(row.get("genPolarV_act"), calc_freq, calc_distance, calc_wire_loss, calc_ant_factor)
+        row["sens_genPolarV_act_db"] = v_db
+        row["sens_genPolarV_act_uv"] = v_uv
+
     with open(RESULT_FILE, "w") as f:
         json.dump(data, f)
     

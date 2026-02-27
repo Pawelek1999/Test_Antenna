@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Table({ gen_data, freq_data, distance }) {
+function Table({ gen_data }) {
   
   const parseNum = (v, fallback = NaN) => {
     if (v === null || v === undefined) return fallback;
@@ -17,19 +17,11 @@ function Table({ gen_data, freq_data, distance }) {
     return Number.isFinite(v) ? v.toFixed(digits) : '-';
   };
 
-  // Debug
-  console.log("Table freq_data:", freq_data);
-  console.log("Table distance:", distance);
-
-  const freqMHz = parseNum(freq_data?.frequency_mhz);
-  const freq = Number.isFinite(freqMHz) ? freqMHz : NaN; // convert MHz -> Hz
-  const wireLoss = parseNum(freq_data?.wire_loss_db, 0);
-  const antFactor = parseNum(freq_data?.antenna_factor_dbm_1, 0);
-  const distanceNum = parseNum(distance);
-  const valid = Number.isFinite(freq) && freq > 0 && Number.isFinite(distanceNum) && distanceNum > 0;
-
   // Obliczanie statystyk (Średnia, Min, Max)
-  const stats = { h_act: [], h_stop: [], v_act: [], v_stop: [] };
+  const stats = { 
+    h_act: [], h_stop: [], v_act: [], v_stop: [],
+    sens_h_db: [], sens_h_uv: [], sens_v_db: [], sens_v_uv: []
+  };
   if (gen_data) {
     gen_data.forEach(row => {
       const add = (arr, val) => { const n = parseNum(val); if (Number.isFinite(n)) arr.push(n); };
@@ -37,6 +29,10 @@ function Table({ gen_data, freq_data, distance }) {
       add(stats.h_stop, row.genPolarH_stop);
       add(stats.v_act, row.genPolarV_act);
       add(stats.v_stop, row.genPolarV_stop);
+      add(stats.sens_h_db, row.sens_genPolarH_act_db);
+      add(stats.sens_h_uv, row.sens_genPolarH_act_uv);
+      add(stats.sens_v_db, row.sens_genPolarV_act_db);
+      add(stats.sens_v_uv, row.sens_genPolarV_act_uv);
     });
   }
 
@@ -52,21 +48,20 @@ function Table({ gen_data, freq_data, distance }) {
   const s_h_stop = calcStats(stats.h_stop);
   const s_v_act = calcStats(stats.v_act);
   const s_v_stop = calcStats(stats.v_stop);
-
-  const getSens = (genVal) => {
-    if (!valid || !Number.isFinite(genVal)) return { db: NaN, uv: NaN };
-    const db = genVal - wireLoss - (20 * Math.log10(distanceNum)) + (20 * Math.log10(freq)) - antFactor + 75.01;
-    const uv = Math.pow(10, db / 20);
-    return { db, uv };
-  };
+  const s_sens_h_db = calcStats(stats.sens_h_db);
+  const s_sens_h_uv = calcStats(stats.sens_h_uv);
+  const s_sens_v_db = calcStats(stats.sens_v_db);
+  const s_sens_v_uv = calcStats(stats.sens_v_uv);
 
   const renderSummaryRow = (label, type) => {
     const h_act = s_h_act[type];
     const h_stop = s_h_stop[type];
     const v_act = s_v_act[type];
     const v_stop = s_v_stop[type];
-    const sensH = getSens(h_act);
-    const sensV = getSens(v_act);
+    const sensH_db = s_sens_h_db[type];
+    const sensH_uv = s_sens_h_uv[type];
+    const sensV_db = s_sens_v_db[type];
+    const sensV_uv = s_sens_v_uv[type];
 
     return (
       <tr key={label} className="font-bold bg-gray-100 border-t-2 border-gray-300 text-gray-900">
@@ -75,10 +70,10 @@ function Table({ gen_data, freq_data, distance }) {
         <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(h_stop)}</td>
         <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(v_act)}</td>
         <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(v_stop)}</td>
-        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensH.db)} dBµV/m</td>
-        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensH.uv)} µV/m</td>
-        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensV.db)} dBµV/m</td>
-        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensV.uv)} µV/m</td>
+        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensH_db)} dBµV/m</td>
+        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensH_uv)} µV/m</td>
+        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensV_db)} dBµV/m</td>
+        <td className="border border-gray-300 p-3 print:p-1">{formatOrDash(sensV_uv)} µV/m</td>
       </tr>
     );
   };
@@ -119,21 +114,6 @@ function Table({ gen_data, freq_data, distance }) {
         </thead>
         <tbody className="divide-y divide-gray-200">
           {gen_data ? (gen_data.map((row, index) => {
-            const genH = parseNum(row.genPolarH_act);
-            const genV = parseNum(row.genPolarV_act);
-            const distanceNum = parseNum(distance);
-            const valid = Number.isFinite(freq) && freq > 0 && Number.isFinite(distanceNum) && distanceNum > 0;
-
-            let sensH_db = NaN;
-            let sensV_db = NaN;
-            if (valid) {
-              sensH_db = genH - wireLoss - (20 * Math.log10(distanceNum)) + (20 * Math.log10(freq)) - antFactor + 75.01;
-              sensV_db = genV - wireLoss - (20 * Math.log10(distanceNum)) + (20 * Math.log10(freq)) - antFactor + 75.01;
-            }
-
-            const sensH_uv = Number.isFinite(sensH_db) ? Math.pow(10, sensH_db / 20) : NaN;
-            const sensV_uv = Number.isFinite(sensV_db) ? Math.pow(10, sensV_db / 20) : NaN;
-
             return (
               <tr key={index}>
                 <td className="border border-gray-300 p-2 font-semibold bg-gray-50 text-gray-900 print:p-1">{row.angle}</td>
@@ -141,10 +121,10 @@ function Table({ gen_data, freq_data, distance }) {
                 <td className="border border-gray-300 p-2 bg-gray-50 text-gray-700 print:p-1">{row.genPolarH_stop}</td>
                 <td className="border border-gray-300 p-2 bg-gray-50 text-gray-700 print:p-1">{row.genPolarV_act}</td>
                 <td className="border border-gray-300 p-2 bg-gray-50 text-gray-700 print:p-1">{row.genPolarV_stop}</td>
-                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{formatOrDash(sensH_db)} dBµV/m</td>
-                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{formatOrDash(sensH_uv)} µV/m</td>
-                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{formatOrDash(sensV_db)} dBµV/m</td>
-                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{formatOrDash(sensV_uv)} µV/m</td>
+                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{row.sens_genPolarH_act_db} dBµV/m</td>
+                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{row.sens_genPolarH_act_uv} µV/m</td>
+                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{row.sens_genPolarV_act_db} dBµV/m</td>
+                <td className="border border-gray-300 p-2 text-gray-900 print:p-1">{row.sens_genPolarV_act_uv} µV/m</td>
               </tr>
             );
             })

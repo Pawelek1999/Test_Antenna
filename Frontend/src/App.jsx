@@ -160,8 +160,6 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
         <div className="print:break-before-page">
           <Table 
             gen_data={testResults} 
-            freq_data={selectedFrequency}
-            distance={distance}
           />
         </div>
         
