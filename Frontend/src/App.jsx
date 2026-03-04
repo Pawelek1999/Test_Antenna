@@ -9,6 +9,10 @@ import PdfButton from "./Components/PdfButton.jsx";
 import TestControl from "./Components/TestControl.jsx";
 import somfyLogo from "./assets/Somfy_Logo.png";
 import ExcelExportTool from "./Components/ExelExportTool.jsx";
+import RuntimeParamsForm from "./Components/RuntimeParamsForm.jsx";
+import HardwareConfigForm from "./Components/HardwareConfigForm.jsx";
+import TestConfigForm from "./Components/TestConfigForm.jsx";
+import ConfigSummary from "./Components/ConfigSummary.jsx";
 
 
 function App() {
@@ -30,12 +34,16 @@ function App() {
 const [distance, setDistance] = useState(3);
 const [frequenciesData, setFrequenciesData] = useState([]);
 const [selectedFrequency, setSelectedFrequency] = useState(null);
-
-    useEffect(() => {
-        fetch("/frequency.json")
+ 
+    const fetchFrequencies = () => {
+        fetch("http://127.0.0.1:8000/frequencies")
             .then((response) => response.json())
             .then((data) => setFrequenciesData(data))
             .catch((error) => console.error("Błąd pobierania danych:", error));
+    };
+
+    useEffect(() => {
+        fetchFrequencies();
     }, []);
 
 // --- Logika Testu Anteny ---
@@ -137,8 +145,21 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
                 onAntenaSelect={setSelectedAntena} 
               />
             </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <RuntimeParamsForm />
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <HardwareConfigForm />
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <TestConfigForm frequenciesData={frequenciesData} />
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <ConfigSummary />
+            </div>
              <div className="bg-gray-50 rounded-lg p-4">
               <ExcelExportTool testResults={testResults} 
+              onUploadSuccess={fetchFrequencies}
               />
             </div>
             <div className="bg-gray-50 rounded-lg p-4">

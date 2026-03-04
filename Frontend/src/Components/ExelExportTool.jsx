@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { saveAs } from 'file-saver';
 import { Download, FileUp, CheckCircle2 } from 'lucide-react'; // Opcjonalne ikony
 
-const ExcelExportTool = ({ testResults }) => {
+const ExcelExportTool = ({ testResults, onUploadSuccess }) => {
   const [templateFile, setTemplateFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -15,8 +15,8 @@ const ExcelExportTool = ({ testResults }) => {
       const formData = new FormData();
       formData.append('file', file);
 
-      // Automatyczna aktualizacja częstotliwości po upuszczeniu pliku
-      fetch('http://localhost:8000/update-frequencies-from-excel', {
+      // Wysyłamy szablon do backendu (zapis + aktualizacja częstotliwości)
+      fetch('http://127.0.0.1:8000/upload-template', {
         method: 'POST',
         body: formData,
       })
@@ -28,14 +28,17 @@ const ExcelExportTool = ({ testResults }) => {
           return data;
         })
         .then((data) => {
-          alert(`${data.message}\nOdśwież stronę (F5), aby zobaczyć nowe częstotliwości na liście.`);
+          alert(data.message); // Poinformuj o sukcesie
+          if (onUploadSuccess) {
+            onUploadSuccess(); // Odśwież listę częstotliwości w komponencie nadrzędnym
+          }
         })
         .catch((err) => {
           console.error("Błąd aktualizacji częstotliwości:", err);
           alert(`Nie udało się zaktualizować częstotliwości:\n${err.message}`);
         });
     }
-  }, []);
+  }, [onUploadSuccess]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] },
@@ -52,12 +55,9 @@ const ExcelExportTool = ({ testResults }) => {
     setIsProcessing(true);
 
     try {
-        const formData = new FormData();
-        formData.append('file', templateFile);
-
-        const response = await fetch('http://localhost:8000/drag-excel', {
-            method: 'POST',
-            body: formData,
+        // Pobieramy raport wygenerowany na podstawie zapisanego wcześniej szablonu
+        const response = await fetch('http://127.0.0.1:8000/generate-report', {
+            method: 'GET',
         });
 
         if (!response.ok) {

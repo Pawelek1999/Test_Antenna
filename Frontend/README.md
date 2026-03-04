@@ -2,6 +2,7 @@ biblioteki do exela  npm install exceljs file-saver react-dropzone
 
 zainstalowalem openpyxl i python-mltipart do obslugi plikow excelowych i przesylania plikow
 
+pobieranie danych z frequency.json, przez API
 
 
 npm install chart.js react-chartjs-2

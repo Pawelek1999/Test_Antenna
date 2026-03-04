@@ -19,7 +19,7 @@
     "id": 3,
     "protocol": "RTS (AM)",
     "country": "Europe / US / China / Singapore",
-    "frequency_mhz": 433.420,
+    "frequency_mhz": 433.42,
     "wire_loss_db": 6.97,
     "antenna_factor_dbm_1": 17.0
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "protocol": "RTS (AM)",
     "country": "Europe / US / China",
-    "frequency_mhz": 433.920,
+    "frequency_mhz": 433.92,
     "wire_loss_db": 6.97,
     "antenna_factor_dbm_1": 17.0
   },
@@ -35,7 +35,7 @@
     "id": 5,
     "protocol": "RTS (FM)",
     "country": "Korea",
-    "frequency_mhz": 447.700,
+    "frequency_mhz": 447.7,
     "wire_loss_db": 7.01,
     "antenna_factor_dbm_1": 17.1
   },
@@ -43,32 +43,24 @@
     "id": 6,
     "protocol": "RTX (FM)",
     "country": "Europe",
-    "frequency_mhz": 868.250,
-    "wire_loss_db": 0,
+    "frequency_mhz": 868.25,
+    "wire_loss_db": null,
     "antenna_factor_dbm_1": 23.0
   },
   {
     "id": 7,
     "protocol": "RTX (FM)",
     "country": "Europe",
-    "frequency_mhz": 868.950,
-    "wire_loss_db": 0,
+    "frequency_mhz": 869.85,
+    "wire_loss_db": null,
     "antenna_factor_dbm_1": 23.0
   },
   {
     "id": 8,
-    "protocol": "RTX (FM)",
-    "country": "Europe",
-    "frequency_mhz": 869.850,
-    "wire_loss_db": 0,
-    "antenna_factor_dbm_1": 23.0
-  },
-  {
-    "id": 9,
     "protocol": "ZIGBEE / BLE",
     "country": "Europe",
     "frequency_mhz": 2400.0,
-    "wire_loss_db": 0,
+    "wire_loss_db": null,
     "antenna_factor_dbm_1": 30.0
   }
 ]
