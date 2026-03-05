@@ -1,5 +1,5 @@
 {
-  "start_power_dbm": -60.0,
+  "start_power_dbm": -50.0,
   "end_power_dbm": 10.0,
   "power_step_db": 1.0,
   "start_table_position": 0,

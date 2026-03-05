@@ -1,55 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FileCheck, RefreshCw, CheckCircle } from 'lucide-react';
+import { useConfig } from '../Components/ConfigContext';
 
-const ConfigSummary = () => {
-  const [hardwareConfig, setHardwareConfig] = useState(null);
-  const [runtimeParams, setRuntimeParams] = useState(null);
-  const [testConfig, setTestConfig] = useState(null);
+const ConfigSummary = ({ onConfirm }) => {
+  const { hardwareConfig, runtimeParams, testConfig, refreshConfig } = useConfig();
   const [loading, setLoading] = useState(false);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [hwRes, rtRes, tcRes] = await Promise.all([
-        fetch('http://127.0.0.1:8000/get-hardware-config'),
-        fetch('http://127.0.0.1:8000/get-runtime-params'),
-        fetch('http://127.0.0.1:8000/get-test-config')
-      ]);
-
-      if (hwRes.ok) setHardwareConfig(await hwRes.json());
-      if (rtRes.ok) setRuntimeParams(await rtRes.json());
-      if (tcRes.ok) setTestConfig(await tcRes.json());
-
-    } catch (error) {
-      console.error("Błąd pobierania konfiguracji:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Pobierz dane przy montowaniu komponentu
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const handleMergeAndSave = async () => {
     setLoading(true);
     try {
-      // 1. Pobierz najświeższe dane z backendu, aby upewnić się, że pracujemy na aktualnych plikach
-      const [hwRes, rtRes, tcRes] = await Promise.all([
-        fetch('http://127.0.0.1:8000/get-hardware-config'),
-        fetch('http://127.0.0.1:8000/get-runtime-params'),
-        fetch('http://127.0.0.1:8000/get-test-config')
-      ]);
-
-      const freshHardwareConfig = await hwRes.json();
-      const freshRuntimeParams = await rtRes.json();
-      const freshTestConfig = await tcRes.json();
-
-      // Zaktualizuj stan w UI, aby odzwierciedlał to, co jest zapisywane
-      setHardwareConfig(freshHardwareConfig);
-      setRuntimeParams(freshRuntimeParams);
-      setTestConfig(freshTestConfig);
+      // Używamy danych bezpośrednio z kontekstu (które są aktualizowane na bieżąco przez formularze)
+      const freshHardwareConfig = hardwareConfig;
+      const freshRuntimeParams = runtimeParams;
+      const freshTestConfig = testConfig;
 
       if (!freshHardwareConfig || Object.keys(freshHardwareConfig).length === 0 || 
           !freshRuntimeParams || Object.keys(freshRuntimeParams).length === 0 || 
@@ -75,6 +38,9 @@ const ConfigSummary = () => {
 
       const data = await response.json();
       alert(data.message);
+      if (onConfirm) {
+        onConfirm();
+      }
     } catch (error) {
       console.error("Błąd scalania:", error);
       alert(`Nie udało się zapisać pliku we_config.json: ${error.message}`);
@@ -100,7 +66,7 @@ const ConfigSummary = () => {
           <h2 className="text-lg font-bold">Podsumowanie Konfiguracji</h2>
         </div>
         <button 
-          onClick={fetchData} 
+          onClick={refreshConfig} 
           className="p-1 hover:bg-gray-100 rounded-full transition" 
           title="Odśwież dane"
         >

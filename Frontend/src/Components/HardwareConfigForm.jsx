@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import { Save, Cpu, RotateCcw } from 'lucide-react';
+import { useConfig } from '../Components/ConfigContext';
 
-const DEFAULT_CONFIG = {
-  analog_channel: 3,
-  voltage_threshold_v: 4.5,
-  safe_stop_power_dbm: -20.0
-};
-
-const HardwareConfigForm = () => {
-  // Domyślne wartości zgodne z wymaganiami
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
+const HardwareConfigForm = ({ onSaveSuccess }) => {
+  const { hardwareConfig, setHardwareConfig } = useConfig();
 
   const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setConfig(prev => ({
+    setHardwareConfig(prev => ({
       ...prev,
       // analog_channel parsujemy jako int, resztę jako float
       [name]: name === 'analog_channel' ? parseInt(value, 10) : parseFloat(value)
@@ -30,7 +24,7 @@ const HardwareConfigForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(config),
+        body: JSON.stringify(hardwareConfig),
       });
 
       if (!response.ok) {
@@ -39,6 +33,9 @@ const HardwareConfigForm = () => {
 
       const data = await response.json();
       alert(data.message);
+      if (onSaveSuccess) {
+        onSaveSuccess();
+      }
     } catch (error) {
       console.error("Błąd:", error);
       alert("Nie udało się zapisać konfiguracji sprzętowej.");
@@ -48,7 +45,11 @@ const HardwareConfigForm = () => {
   };
 
   const handleReset = () => {
-    setConfig(DEFAULT_CONFIG);
+    setHardwareConfig({
+      analog_channel: 3,
+      voltage_threshold_v: 4.5,
+      safe_stop_power_dbm: -20.0
+    });
   };
 
   return (
@@ -66,7 +67,7 @@ const HardwareConfigForm = () => {
             <input
               type="number"
               name="analog_channel"
-              value={config.analog_channel}
+              value={hardwareConfig.analog_channel}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
@@ -78,7 +79,7 @@ const HardwareConfigForm = () => {
             <input
               type="number"
               name="voltage_threshold_v"
-              value={config.voltage_threshold_v}
+              value={hardwareConfig.voltage_threshold_v}
               onChange={handleChange}
               step="0.1"
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -91,7 +92,7 @@ const HardwareConfigForm = () => {
             <input
               type="number"
               name="safe_stop_power_dbm"
-              value={config.safe_stop_power_dbm}
+              value={hardwareConfig.safe_stop_power_dbm}
               onChange={handleChange}
               step="0.1"
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -114,7 +115,7 @@ const HardwareConfigForm = () => {
           className="flex-1 flex items-center justify-center py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition shadow-md disabled:bg-gray-400"
         >
           <Save className="w-4 h-4 mr-2" />
-          {isSaving ? 'Zapisywanie...' : 'Zapisz Config'}
+          {isSaving ? 'Zapisywanie...' : 'Zapisz i kontynuuj'}
         </button>
       </div>
     </div>

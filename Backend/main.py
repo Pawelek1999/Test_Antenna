@@ -82,11 +82,13 @@ async def get_frequencies():
     """Zwraca aktualną konfigurację częstotliwości z pliku w backendzie."""
     if not os.path.exists(FREQUENCY_JSON_PATH):
         return []
-    
-    with open(FREQUENCY_JSON_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
+    try:
+        with open(FREQUENCY_JSON_PATH, "r", encoding="utf-8") as f:
+            content = f.read()
+            return json.loads(content) if content.strip() else []
+    except json.JSONDecodeError:
+        return []
+ 
 def _fill_workbook_with_results(workbook: openpyxl.Workbook, test_results: list):
     """Helper function to populate an Excel workbook with test results."""
     sheet = workbook.worksheets[0]  # Select the first sheet
@@ -282,22 +284,34 @@ async def save_test_config(config: List[Dict[str, Any]]):
 async def get_hardware_config():
     if not os.path.exists(HARDWARE_CONFIG_PATH):
         return {}
-    with open(HARDWARE_CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(HARDWARE_CONFIG_PATH, "r", encoding="utf-8") as f:
+            content = f.read()
+            return json.loads(content) if content.strip() else {}
+    except json.JSONDecodeError:
+        return {}
 
 @app.get("/get-runtime-params")
 async def get_runtime_params():
     if not os.path.exists(RUNTIME_PARAMS_PATH):
         return {}
-    with open(RUNTIME_PARAMS_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(RUNTIME_PARAMS_PATH, "r", encoding="utf-8") as f:
+            content = f.read()
+            return json.loads(content) if content.strip() else {}
+    except json.JSONDecodeError:
+        return {}
 
 @app.get("/get-test-config")
 async def get_test_config():
     if not os.path.exists(TEST_CONFIG_PATH):
         return []
-    with open(TEST_CONFIG_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(TEST_CONFIG_PATH, "r", encoding="utf-8") as f:
+            content = f.read()
+            return json.loads(content) if content.strip() else []
+    except json.JSONDecodeError:
+        return []
 
 @app.post("/save-we-config")
 async def save_we_config(config: List[Dict[str, Any]]):

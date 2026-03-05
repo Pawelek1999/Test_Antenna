@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
 import { Save, Settings, RotateCcw } from 'lucide-react';
+import { useConfig } from '../Components/ConfigContext';
 
-const DEFAULT_PARAMS = {
-  start_power_dbm: -50.0,
-  end_power_dbm: 10.0,
-  power_step_db: 1.0,
-  start_table_position: 0,
-  start_malt_height: 150,
-  silent_search_reduction_db: 5.0
-};
-
-const RuntimeParamsForm = () => {
-  // Domyślne wartości zgodne z wymaganiami
-  const [params, setParams] = useState(DEFAULT_PARAMS);
+const RuntimeParamsForm = ({ onSaveSuccess }) => {
+  const { runtimeParams, setRuntimeParams } = useConfig();
 
   const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setParams(prev => ({
+    setRuntimeParams(prev => ({
       ...prev,
       [name]: parseFloat(value) // Konwersja na liczbę
     }));
@@ -32,7 +23,7 @@ const RuntimeParamsForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(params),
+        body: JSON.stringify(runtimeParams),
       });
 
       if (!response.ok) {
@@ -41,6 +32,9 @@ const RuntimeParamsForm = () => {
 
       const data = await response.json();
       alert(data.message);
+      if (onSaveSuccess) {
+        onSaveSuccess();
+      }
     } catch (error) {
       console.error("Błąd:", error);
       alert("Nie udało się zapisać parametrów.");
@@ -50,7 +44,14 @@ const RuntimeParamsForm = () => {
   };
 
   const handleReset = () => {
-    setParams(DEFAULT_PARAMS);
+    setRuntimeParams({
+      start_power_dbm: -50.0,
+      end_power_dbm: 10.0,
+      power_step_db: 1.0,
+      start_table_position: 0,
+      start_malt_height: 150,
+      silent_search_reduction_db: 5.0
+    });
   };
 
   return (
@@ -67,7 +68,7 @@ const RuntimeParamsForm = () => {
           <input
             type="number"
             name="start_power_dbm"
-            value={params.start_power_dbm}
+            value={runtimeParams.start_power_dbm}
             onChange={handleChange}
             step="0.1"
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -80,7 +81,7 @@ const RuntimeParamsForm = () => {
           <input
             type="number"
             name="end_power_dbm"
-            value={params.end_power_dbm}
+            value={runtimeParams.end_power_dbm}
             onChange={handleChange}
             step="0.1"
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -93,7 +94,7 @@ const RuntimeParamsForm = () => {
           <input
             type="number"
             name="power_step_db"
-            value={params.power_step_db}
+            value={runtimeParams.power_step_db}
             onChange={handleChange}
             step="0.1"
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -106,7 +107,7 @@ const RuntimeParamsForm = () => {
           <input
             type="number"
             name="silent_search_reduction_db"
-            value={params.silent_search_reduction_db}
+            value={runtimeParams.silent_search_reduction_db}
             onChange={handleChange}
             step="0.1"
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -119,7 +120,7 @@ const RuntimeParamsForm = () => {
           <input
             type="number"
             name="start_table_position"
-            value={params.start_table_position}
+            value={runtimeParams.start_table_position}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
           />
@@ -131,7 +132,7 @@ const RuntimeParamsForm = () => {
           <input
             type="number"
             name="start_malt_height"
-            value={params.start_malt_height}
+            value={runtimeParams.start_malt_height}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
           />
@@ -152,7 +153,7 @@ const RuntimeParamsForm = () => {
           className="flex-1 flex items-center justify-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition shadow-md disabled:bg-gray-400"
         >
           <Save className="w-4 h-4 mr-2" />
-          {isSaving ? 'Zapisywanie...' : 'Zapisz Parametry'}
+          {isSaving ? 'Zapisywanie...' : 'Zapisz i kontynuuj'}
         </button>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Save, FileJson, Layers, Radio, Ruler } from 'lucide-react';
+import { useConfig } from '../Components/ConfigContext';
 
-const TestConfigForm = ({ frequenciesData }) => {
+const TestConfigForm = ({ onSaveSuccess }) => {
+  const { setTestConfig, testConfig, frequenciesData } = useConfig();
   const [sheetCount, setSheetCount] = useState(1);
   // Tablica przechowująca wybrane ID częstotliwości dla każdego arkusza
   const [selectedFreqIds, setSelectedFreqIds] = useState([null, null, null]);
@@ -44,21 +46,10 @@ const TestConfigForm = ({ frequenciesData }) => {
     return `${d}.${m}.${y} ${hh}:${mm}`;
   };
 
-  const handleSave = async () => {
-    if (!selectedAntenna) {
-      alert("Wybierz antenę.");
-      return;
-    }
-
-    // Walidacja: czy wybrano częstotliwość dla każdego aktywnego arkusza
-    for (let i = 0; i < sheetCount; i++) {
-      if (!selectedFreqIds[i]) {
-        alert(`Wybierz częstotliwość dla Arkusza ${i + 1}`);
-        return;
-      }
-    }
-
-    setIsSaving(true);
+  // Funkcja generująca konfigurację na podstawie stanu formularza
+  const generateConfig = () => {
+    if (!selectedAntenna) return [];
+    // Nie blokujemy generowania pustej tablicy w trakcie edycji, ale do zapisu wymagamy poprawności
 
     // Generowanie struktury JSON
     const configObjects = [];
@@ -86,18 +77,45 @@ const TestConfigForm = ({ frequenciesData }) => {
         });
       }
     }
+    return configObjects;
+  };
 
+  // Aktualizuj globalny kontekst przy każdej zmianie w formularzu
+  useEffect(() => {
+    const newConfig = generateConfig();
+    setTestConfig(newConfig);
+  }, [sheetCount, selectedFreqIds, selectedAntenna, distance, availableFrequencies]);
+
+  const handleSave = async () => {
+    if (!selectedAntenna) {
+      alert("Wybierz antenę.");
+      return;
+    }
+
+    // Walidacja: czy wybrano częstotliwość dla każdego aktywnego arkusza
+    for (let i = 0; i < sheetCount; i++) {
+      if (!selectedFreqIds[i]) {
+        alert(`Wybierz częstotliwość dla Arkusza ${i + 1}`);
+        return;
+      }
+    }
+
+    setIsSaving(true);
+    
     try {
       const response = await fetch('http://127.0.0.1:8000/save-test-config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(configObjects),
+        body: JSON.stringify(testConfig), // Używamy aktualnego stanu z kontekstu (lub wygenerowanego)
       });
 
       if (!response.ok) throw new Error('Błąd zapisu');
       
       const data = await response.json();
       alert(data.message);
+      if (onSaveSuccess) {
+        onSaveSuccess();
+      }
     } catch (error) {
       console.error("Błąd:", error);
       alert("Nie udało się zapisać konfiguracji testu.");
@@ -180,7 +198,7 @@ const TestConfigForm = ({ frequenciesData }) => {
       </div>
 
       <button onClick={handleSave} disabled={isSaving} className="mt-6 w-full flex items-center justify-center py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition shadow-md disabled:bg-gray-400">
-        <Save className="w-4 h-4 mr-2" /> {isSaving ? 'Zapisywanie...' : 'Generuj JSON'}
+        <Save className="w-4 h-4 mr-2" /> {isSaving ? 'Zapisywanie...' : 'Zapisz i kontynuuj'}
       </button>
     </div>
   );

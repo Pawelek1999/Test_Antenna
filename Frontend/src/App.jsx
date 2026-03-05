@@ -8,14 +8,17 @@ import DistanceInput from "./Components/DistanceInput.jsx";
 import PdfButton from "./Components/PdfButton.jsx";
 import TestControl from "./Components/TestControl.jsx";
 import somfyLogo from "./assets/Somfy_Logo.png";
-import ExcelExportTool from "./Components/ExelExportTool.jsx";
+import TemplateUploader from "./Components/TemplateUploader.jsx";
+import ReportDownloader from "./Components/ReportDownloader.jsx";
 import RuntimeParamsForm from "./Components/RuntimeParamsForm.jsx";
 import HardwareConfigForm from "./Components/HardwareConfigForm.jsx";
 import TestConfigForm from "./Components/TestConfigForm.jsx";
 import ConfigSummary from "./Components/ConfigSummary.jsx";
+import { useConfig } from "./Components/ConfigContext.jsx";
 
 
 function App() {
+  const [configStep, setConfigStep] = useState(1);
   const [selectedAntena, setSelectedAntena] = useState(null);
   const [antennasData, setAntennasData] = useState([]);
 
@@ -32,19 +35,19 @@ function App() {
     }, []);
   
 const [distance, setDistance] = useState(3);
-const [frequenciesData, setFrequenciesData] = useState([]);
 const [selectedFrequency, setSelectedFrequency] = useState(null);
  
-    const fetchFrequencies = () => {
-        fetch("http://127.0.0.1:8000/frequencies")
-            .then((response) => response.json())
-            .then((data) => setFrequenciesData(data))
-            .catch((error) => console.error("Błąd pobierania danych:", error));
-    };
+    // Pobierz dane i funkcję do odświeżania z globalnego kontekstu
+    const { frequenciesData, fetchFrequencies } = useConfig();
 
-    useEffect(() => {
-        fetchFrequencies();
-    }, []);
+    const handleTemplateUploadSuccess = () => {
+      fetchFrequencies();
+      setConfigStep(2);
+    };
+  
+    const nextStep = () => {
+      setConfigStep(prev => prev + 1);
+    };
 
 // --- Logika Testu Anteny ---
   const [isTesting, setIsTesting] = useState(false);
@@ -125,78 +128,86 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
   // Czyszczenie interwału przy odmontowaniu komponentu
   useEffect(() => { return () => clearInterval(pollingInterval.current); }, []);
 
+  const renderWizard = () => (
+    <div className="max-w-xl mx-auto py-10">
+      {configStep === 1 && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-bold mb-4">Krok 1: Wgraj szablon Excel</h2>
+          <p className="text-sm text-gray-600 mb-4">Przeciągnij plik `.xlsx` z szablonem raportu. Spowoduje to odczytanie dostępnych częstotliwości do testów.</p>
+          <TemplateUploader onUploadSuccess={handleTemplateUploadSuccess} />
+        </div>
+      )}
+      {configStep === 2 && <HardwareConfigForm onSaveSuccess={nextStep} />}
+      {configStep === 3 && <RuntimeParamsForm onSaveSuccess={nextStep} />}
+      {configStep === 4 && <TestConfigForm onSaveSuccess={nextStep} />}
+      {configStep === 5 && <ConfigSummary onConfirm={nextStep} />}
+    </div>
+  );
+
+  const renderMainApp = () => (
+    <div id="printable" className="max-w-7xl mx-auto space-y-8 print:max-w-none print:w-full print:m-0">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-[#FDB913] p-6 space-y-6 print:break-inside-avoid print:shadow-none print:border-none print:p-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <AntenaChoice 
+              antennasData={antennasData} 
+              selectedAntena={selectedAntena} 
+              onAntenaSelect={setSelectedAntena} 
+            />
+          </div>
+          <div className="bg-gray-50 rounded-lg p-4 flex flex-col gap-4">
+            <ReportDownloader testResults={testResults} />
+          </div>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <FrequencyChoice 
+              frequenciesData={frequenciesData} 
+              selectedFrequency={selectedFrequency} 
+              onFrequencySelect={setSelectedFrequency}
+            />
+          </div>
+        </div>
+        <div className="border-t border-gray-100 pt-6">
+          <DistanceInput 
+            distance={distance} 
+            setDistance={setDistance} 
+          />
+        </div>
+      </div>
+
+      <div className="print:break-before-page">
+        <Table 
+          gen_data={testResults} 
+        />
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start print:break-inside-avoid">
+        <DifferenceTable gen_data={testResults} />
+        <ChartAntena selectedAntena={selectedAntena} gen_data={testResults} />
+      </div>
+
+      <div className="print:hidden">
+        <TestControl 
+          handleStartTest={handleStartTest} 
+          handleStopTest={handleStopTest} 
+          isTesting={isTesting} 
+        />
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans py-10 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white">
 
       <div className="max-w-7xl mx-auto flex justify-between items-center mb-6">
         <img src={somfyLogo} alt="Somfy" className="h-20" />
-        <div className="print:hidden">
-          <PdfButton />
-        </div>
+        {configStep > 5 && (
+          <div className="print:hidden">
+            <PdfButton />
+          </div>
+        )}
       </div>
 
-      <div id="printable" className="max-w-7xl mx-auto space-y-8 print:max-w-none print:w-full print:m-0">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-[#FDB913] p-6 space-y-6 print:break-inside-avoid print:shadow-none print:border-none print:p-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <AntenaChoice 
-                antennasData={antennasData} 
-                selectedAntena={selectedAntena} 
-                onAntenaSelect={setSelectedAntena} 
-              />
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <RuntimeParamsForm />
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <HardwareConfigForm />
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <TestConfigForm frequenciesData={frequenciesData} />
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <ConfigSummary />
-            </div>
-             <div className="bg-gray-50 rounded-lg p-4">
-              <ExcelExportTool testResults={testResults} 
-              onUploadSuccess={fetchFrequencies}
-              />
-            </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <FrequencyChoice 
-                frequenciesData={frequenciesData} 
-                selectedFrequency={selectedFrequency} 
-                onFrequencySelect={setSelectedFrequency}
-              />
-            </div>
-          </div>
-          <div className="border-t border-gray-100 pt-6">
-            <DistanceInput 
-              distance={distance} 
-              setDistance={setDistance} 
-            />
-          </div>
-        </div>
-
-        <div className="print:break-before-page">
-          <Table 
-            gen_data={testResults} 
-          />
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start print:break-inside-avoid">
-          <DifferenceTable gen_data={testResults} />
-          <ChartAntena selectedAntena={selectedAntena} gen_data={testResults} />
-        </div>
-
-        <div className="print:hidden">
-          <TestControl 
-            handleStartTest={handleStartTest} 
-            handleStopTest={handleStopTest} 
-            isTesting={isTesting} 
-          />
-        </div>
-      </div>
+      {configStep <= 5 ? renderWizard() : renderMainApp()}
     </div>
 
   )
