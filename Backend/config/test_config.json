@@ -2,7 +2,7 @@
   {
     "sheet": 1,
     "id": 1,
-    "date": "06.03.2026 14:11",
+    "date": "06.03.2026 14:30",
     "description": "EMC sensitivity sweep test for 426.0625 MHz band",
     "antenna": "RTS Printed or Wire Antenna",
     "test_params": {
@@ -33,7 +33,7 @@
   {
     "sheet": 2,
     "id": 2,
-    "date": "06.03.2026 14:11",
+    "date": "06.03.2026 14:30",
     "description": "EMC sensitivity sweep test for 433.42 MHz band",
     "antenna": "RTS Printed or Wire Antenna",
     "test_params": {
@@ -64,7 +64,7 @@
   {
     "sheet": 3,
     "id": 3,
-    "date": "06.03.2026 14:11",
+    "date": "06.03.2026 14:30",
     "description": "EMC sensitivity sweep test for 447.7 MHz band",
     "antenna": "RTS Printed or Wire Antenna",
     "test_params": {

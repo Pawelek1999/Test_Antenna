@@ -60,8 +60,15 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
       const res = await fetch("http://localhost:8000/check-status");
       const statusData = await res.json();
       
+      // Jeśli test trwa, ale są już dostępne częściowe wyniki, pobierz je dla podglądu (Live Update)
+      if (statusData.is_running && statusData.results_ready) {
+        const resultRes = await fetch("http://localhost:8000/download-data");
+        const resultData = await resultRes.json();
+        setTestResults(resultData);
+      }
+
       // Test zakończył się pomyślnie i wyniki są gotowe
-      if (statusData.results_ready) {
+      if (!statusData.is_running && statusData.results_ready) {
         clearInterval(pollingInterval.current);
         const resultRes = await fetch("http://localhost:8000/download-data");
         const resultData = await resultRes.json();
@@ -161,7 +168,7 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
               />
             </div>
             <div className="bg-gray-50 rounded-lg p-4 flex flex-col gap-4">
-              <ReportDownloader testResults={testResults} />
+              <ReportDownloader testResults={testResults} isTesting={isTesting} />
             </div>
             <div className="bg-gray-50 rounded-lg p-4">
               <FrequencyChoice 
