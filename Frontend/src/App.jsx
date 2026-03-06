@@ -1,11 +1,7 @@
-import AntenaChoice from "./Components/AntenaChoice.jsx";
 import { useState, useEffect, useRef } from "react";
-import FrequencyChoice from "./Components/FrequencyChoice.jsx";
 import ChartAntena from "./Components/ChartAntena.jsx";
 import Table from "./Components/Table.jsx";
 import DifferenceTable from "./Components/DifferenceTable.jsx";
-import DistanceInput from "./Components/DistanceInput.jsx";
-import PdfButton from "./Components/PdfButton.jsx";
 import TestControl from "./Components/TestControl.jsx";
 import somfyLogo from "./assets/Somfy_Logo.png";
 import TemplateUploader from "./Components/TemplateUploader.jsx";
@@ -19,8 +15,8 @@ import { useConfig } from "./Components/ConfigContext.jsx";
 
 function App() {
   const [configStep, setConfigStep] = useState(1);
-  const [selectedAntena, setSelectedAntena] = useState(null);
   const [antennasData, setAntennasData] = useState([]);
+  const [currentSheetView, setCurrentSheetView] = useState(1);
 
     useEffect(() => {
       fetch("/antennas.json")
@@ -34,9 +30,6 @@ function App() {
         .catch((error) => console.error("Błąd pobierania danych:", error));
     }, []);
   
-const [distance, setDistance] = useState(3);
-const [selectedFrequency, setSelectedFrequency] = useState(null);
- 
     // Pobierz dane i funkcję do odświeżania z globalnego kontekstu
     const { frequenciesData, fetchFrequencies } = useConfig();
 
@@ -152,37 +145,56 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
   );
 
   const renderMainApp = () => {
-    // Wybierz wyniki z pierwszego arkusza, który ma dane, do wyświetlenia na wykresach i w tabelach.
-    const firstResultWithData = testResults?.find(r => r.result && r.result.length > 0);
-    const displayResults = firstResultWithData ? firstResultWithData.result : null;
+    // Znajdź dane dla aktualnie wybranego arkusza
+    const currentSheetData = testResults?.find(r => r.sheet === currentSheetView);
+    const displayResults = currentSheetData ? currentSheetData.result : null;
 
+    // Znajdź obiekt anteny dla wykresu na podstawie nazwy z wyników testu
+    const antennaName = currentSheetData?.antenna;
+    const antennaObjectForChart = antennasData.find(a => a.nazwa === antennaName);
+
+    // Przygotuj listę dostępnych arkuszy do przełączania widoku
+    const availableSheets = testResults
+      ?.filter(r => r.result && r.result.length > 0)
+      .map(r => r.sheet) || [];
+      
     return (
       <div id="printable" className="max-w-7xl mx-auto space-y-8 print:max-w-none print:w-full print:m-0">
+        
+        <div className="print:hidden">
+          <TestControl 
+            handleStartTest={handleStartTest} 
+            handleStopTest={handleStopTest} 
+            isTesting={isTesting} 
+          />
+        </div>
+
+        {availableSheets.length > 1 && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 print:hidden">
+            <h3 className="text-sm font-bold text-gray-700 mb-2">Wybierz widok arkusza</h3>
+            <div className="flex flex-wrap gap-2">
+              {availableSheets.map(sheetNum => (
+                <button
+                  key={sheetNum}
+                  onClick={() => setCurrentSheetView(sheetNum)}
+                  className={`px-4 py-2 rounded-md text-sm font-semibold transition ${
+                    currentSheetView === sheetNum
+                      ? 'bg-indigo-600 text-white shadow'
+                      : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
+                  }`}
+                >
+                  Arkusz {sheetNum}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-[#FDB913] p-6 space-y-6 print:break-inside-avoid print:shadow-none print:border-none print:p-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-ray-50 rounded-lg p-4">
-              <AntenaChoice 
-                antennasData={antennasData} 
-                selectedAntena={selectedAntena} 
-                onAntenaSelect={setSelectedAntena} 
-              />
-            </div>
             <div className="bg-gray-50 rounded-lg p-4 flex flex-col gap-4">
               <ReportDownloader testResults={testResults} isTesting={isTesting} />
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <FrequencyChoice 
-                frequenciesData={frequenciesData} 
-                selectedFrequency={selectedFrequency} 
-                onFrequencySelect={setSelectedFrequency}
-              />
-            </div>
-          </div>
-          <div className="border-t border-gray-100 pt-6">
-            <DistanceInput 
-              distance={distance} 
-              setDistance={setDistance} 
-            />
           </div>
         </div>
 
@@ -194,15 +206,7 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start print:break-inside-avoid">
           <DifferenceTable gen_data={displayResults} />
-          <ChartAntena selectedAntena={selectedAntena} gen_data={displayResults} />
-        </div>
-
-        <div className="print:hidden">
-          <TestControl 
-            handleStartTest={handleStartTest} 
-            handleStopTest={handleStopTest} 
-            isTesting={isTesting} 
-          />
+          <ChartAntena selectedAntena={antennaObjectForChart} gen_data={displayResults} />
         </div>
       </div>
     );
@@ -213,11 +217,6 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
 
       <div className="max-w-7xl mx-auto flex justify-between items-center mb-6">
         <img src={somfyLogo} alt="Somfy" className="h-20" />
-        {configStep > 5 && (
-          <div className="print:hidden">
-            <PdfButton />
-          </div>
-        )}
       </div>
 
       {configStep <= 5 ? renderWizard() : renderMainApp()}

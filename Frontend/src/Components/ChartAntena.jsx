@@ -30,7 +30,17 @@ function ChartAntena({ selectedAntena, gen_data }) {
     if (!gen_data) return 0;
     const row = gen_data.find(r => r.angle === label);
     if (row) {
-      const val = parseFloat(row.genPolarH_act);
+      const val = parseFloat(row.sens_genPolarH_act_db);
+      return Number.isFinite(val) ? val : 0;
+    }
+    return 0;
+  });
+
+  const polarVData = labels.map(label => {
+    if (!gen_data) return 0;
+    const row = gen_data.find(r => r.angle === label);
+    if (row) {
+      const val = parseFloat(row.sens_genPolarV_act_db);
       return Number.isFinite(val) ? val : 0;
     }
     return 0;
@@ -54,6 +64,14 @@ function ChartAntena({ selectedAntena, gen_data }) {
         data: polarHData,
         borderColor: 'blue',
         backgroundColor: 'rgba(0, 0, 255, 0.1)',
+        fill: false,
+        borderWidth: 3,
+      },
+      {
+        label: 'Polar V',
+        data: polarVData,
+        borderColor: 'green',
+        backgroundColor: 'rgba(0, 255, 0, 0.1)',
         fill: false,
         borderWidth: 3,
       }
