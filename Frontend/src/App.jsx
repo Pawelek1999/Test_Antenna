@@ -144,56 +144,62 @@ const [selectedFrequency, setSelectedFrequency] = useState(null);
     </div>
   );
 
-  const renderMainApp = () => (
-    <div id="printable" className="max-w-7xl mx-auto space-y-8 print:max-w-none print:w-full print:m-0">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-[#FDB913] p-6 space-y-6 print:break-inside-avoid print:shadow-none print:border-none print:p-0">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <AntenaChoice 
-              antennasData={antennasData} 
-              selectedAntena={selectedAntena} 
-              onAntenaSelect={setSelectedAntena} 
-            />
+  const renderMainApp = () => {
+    // Wybierz wyniki z pierwszego arkusza, który ma dane, do wyświetlenia na wykresach i w tabelach.
+    const firstResultWithData = testResults?.find(r => r.result && r.result.length > 0);
+    const displayResults = firstResultWithData ? firstResultWithData.result : null;
+
+    return (
+      <div id="printable" className="max-w-7xl mx-auto space-y-8 print:max-w-none print:w-full print:m-0">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 border-t-4 border-t-[#FDB913] p-6 space-y-6 print:break-inside-avoid print:shadow-none print:border-none print:p-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-ray-50 rounded-lg p-4">
+              <AntenaChoice 
+                antennasData={antennasData} 
+                selectedAntena={selectedAntena} 
+                onAntenaSelect={setSelectedAntena} 
+              />
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4 flex flex-col gap-4">
+              <ReportDownloader testResults={testResults} />
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <FrequencyChoice 
+                frequenciesData={frequenciesData} 
+                selectedFrequency={selectedFrequency} 
+                onFrequencySelect={setSelectedFrequency}
+              />
+            </div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-4 flex flex-col gap-4">
-            <ReportDownloader testResults={testResults} />
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <FrequencyChoice 
-              frequenciesData={frequenciesData} 
-              selectedFrequency={selectedFrequency} 
-              onFrequencySelect={setSelectedFrequency}
+          <div className="border-t border-gray-100 pt-6">
+            <DistanceInput 
+              distance={distance} 
+              setDistance={setDistance} 
             />
           </div>
         </div>
-        <div className="border-t border-gray-100 pt-6">
-          <DistanceInput 
-            distance={distance} 
-            setDistance={setDistance} 
+
+        <div className="print:break-before-page">
+          <Table 
+            gen_data={displayResults} 
+          />
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start print:break-inside-avoid">
+          <DifferenceTable gen_data={displayResults} />
+          <ChartAntena selectedAntena={selectedAntena} gen_data={displayResults} />
+        </div>
+
+        <div className="print:hidden">
+          <TestControl 
+            handleStartTest={handleStartTest} 
+            handleStopTest={handleStopTest} 
+            isTesting={isTesting} 
           />
         </div>
       </div>
-
-      <div className="print:break-before-page">
-        <Table 
-          gen_data={testResults} 
-        />
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start print:break-inside-avoid">
-        <DifferenceTable gen_data={testResults} />
-        <ChartAntena selectedAntena={selectedAntena} gen_data={testResults} />
-      </div>
-
-      <div className="print:hidden">
-        <TestControl 
-          handleStartTest={handleStartTest} 
-          handleStopTest={handleStopTest} 
-          isTesting={isTesting} 
-        />
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans py-10 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white">

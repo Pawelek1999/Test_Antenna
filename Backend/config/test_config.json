@@ -2,13 +2,75 @@
   {
     "sheet": 1,
     "id": 1,
-    "date": "05.03.2026 10:53",
+    "date": "06.03.2026 14:11",
+    "description": "EMC sensitivity sweep test for 426.0625 MHz band",
+    "antenna": "RTS Printed or Wire Antenna",
+    "test_params": {
+      "frequency_hz": 426062500,
+      "wire_loss_db": 4.9,
+      "antenna_factor_dbm_1": 17.2,
+      "distance": 3,
+      "angles": [
+        0,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        210,
+        240,
+        270,
+        300,
+        330
+      ],
+      "polarizations": [
+        "V",
+        "H"
+      ]
+    }
+  },
+  {
+    "sheet": 2,
+    "id": 2,
+    "date": "06.03.2026 14:11",
     "description": "EMC sensitivity sweep test for 433.42 MHz band",
     "antenna": "RTS Printed or Wire Antenna",
     "test_params": {
       "frequency_hz": 433420000,
       "wire_loss_db": 4.93,
       "antenna_factor_dbm_1": 17,
+      "distance": 3,
+      "angles": [
+        0,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        210,
+        240,
+        270,
+        300,
+        330
+      ],
+      "polarizations": [
+        "V",
+        "H"
+      ]
+    }
+  },
+  {
+    "sheet": 3,
+    "id": 3,
+    "date": "06.03.2026 14:11",
+    "description": "EMC sensitivity sweep test for 447.7 MHz band",
+    "antenna": "RTS Printed or Wire Antenna",
+    "test_params": {
+      "frequency_hz": 447700000,
+      "wire_loss_db": 5.03,
+      "antenna_factor_dbm_1": 17.1,
       "distance": 3,
       "angles": [
         0,

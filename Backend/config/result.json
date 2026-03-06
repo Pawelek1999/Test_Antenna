@@ -1,0 +1,422 @@
+[
+  {
+    "sheet": 1,
+    "id": 1,
+    "antenna": "RTS Printed or Wire Antenna",
+    "frequency_mhz": 426.0625,
+    "result": [
+      {
+        "angle": "0°",
+        "genPolarH_act": -10,
+        "genPolarH_stop": 0,
+        "genPolarV_act": 0,
+        "genPolarV_stop": 0,
+        "sens_genPolarH_act_db": 85.95704113245738,
+        "sens_genPolarH_act_uv": 19854.184649490388,
+        "sens_genPolarV_act_db": 95.95704113245738,
+        "sens_genPolarV_act_uv": 62784.444577941416
+      },
+      {
+        "angle": "30°",
+        "genPolarH_act": 120,
+        "genPolarH_stop": 60,
+        "genPolarV_act": 90,
+        "genPolarV_stop": 50,
+        "sens_genPolarH_act_db": 215.9570411324574,
+        "sens_genPolarH_act_uv": 62784444577.941414,
+        "sens_genPolarV_act_db": 185.95704113245736,
+        "sens_genPolarV_act_uv": 1985418464.9490387
+      },
+      {
+        "angle": "60°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "90°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 60,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "120°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "150°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "180°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "210°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "240°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "270°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "300°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      },
+      {
+        "angle": "330°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 195.95704113245736,
+        "sens_genPolarH_act_uv": 6278444457.794142,
+        "sens_genPolarV_act_db": 175.95704113245736,
+        "sens_genPolarV_act_uv": 627844445.7794142
+      }
+    ]
+  },
+  {
+    "sheet": 2,
+    "id": 2,
+    "antenna": "RTS Printed or Wire Antenna",
+    "frequency_mhz": 433.42,
+    "result": [
+      {
+        "angle": "0°",
+        "genPolarH_act": -10,
+        "genPolarH_stop": 0,
+        "genPolarV_act": 0,
+        "genPolarV_stop": 0,
+        "sens_genPolarH_act_db": 86.27575386158323,
+        "sens_genPolarH_act_uv": 20596.228107302053,
+        "sens_genPolarV_act_db": 96.27575386158323,
+        "sens_genPolarV_act_uv": 65130.992027453336
+      },
+      {
+        "angle": "30°",
+        "genPolarH_act": 120,
+        "genPolarH_stop": 60,
+        "genPolarV_act": 90,
+        "genPolarV_stop": 50,
+        "sens_genPolarH_act_db": 216.2757538615832,
+        "sens_genPolarH_act_uv": 65130992027.45307,
+        "sens_genPolarV_act_db": 186.2757538615832,
+        "sens_genPolarV_act_uv": 2059622810.7301967
+      },
+      {
+        "angle": "60°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "90°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 60,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "120°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "150°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "180°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "210°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "240°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "270°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "300°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      },
+      {
+        "angle": "330°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.2757538615832,
+        "sens_genPolarH_act_uv": 6513099202.745307,
+        "sens_genPolarV_act_db": 176.2757538615832,
+        "sens_genPolarV_act_uv": 651309920.2745308
+      }
+    ]
+  },
+  {
+    "sheet": 3,
+    "id": 3,
+    "antenna": "RTS Printed or Wire Antenna",
+    "frequency_mhz": 447.7,
+    "result": [
+      {
+        "angle": "0°",
+        "genPolarH_act": -10,
+        "genPolarH_stop": 0,
+        "genPolarV_act": 0,
+        "genPolarV_stop": 0,
+        "sens_genPolarH_act_db": 86.35731679327566,
+        "sens_genPolarH_act_uv": 20790.543355953767,
+        "sens_genPolarV_act_db": 96.35731679327566,
+        "sens_genPolarV_act_uv": 65745.47079729472
+      },
+      {
+        "angle": "30°",
+        "genPolarH_act": 120,
+        "genPolarH_stop": 60,
+        "genPolarV_act": 90,
+        "genPolarV_stop": 50,
+        "sens_genPolarH_act_db": 216.3573167932757,
+        "sens_genPolarH_act_uv": 65745470797.295,
+        "sens_genPolarV_act_db": 186.3573167932757,
+        "sens_genPolarV_act_uv": 2079054335.5953853
+      },
+      {
+        "angle": "60°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "90°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 60,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "120°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "150°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "180°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "210°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "240°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "270°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "300°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      },
+      {
+        "angle": "330°",
+        "genPolarH_act": 100,
+        "genPolarH_stop": 50,
+        "genPolarV_act": 80,
+        "genPolarV_stop": 40,
+        "sens_genPolarH_act_db": 196.3573167932757,
+        "sens_genPolarH_act_uv": 6574547079.7295,
+        "sens_genPolarV_act_db": 176.3573167932757,
+        "sens_genPolarV_act_uv": 657454707.97295
+      }
+    ]
+  }
+]

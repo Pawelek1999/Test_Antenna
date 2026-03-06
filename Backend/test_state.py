@@ -1,5 +1,3 @@
-RESULT_FILE = "result.json"
-
 class TestState:
     """Prosta klasa do zarządzania stanem testu w pamięci."""
     def __init__(self):

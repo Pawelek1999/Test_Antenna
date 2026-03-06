@@ -5,9 +5,12 @@ import { Download } from 'lucide-react';
 const ReportDownloader = ({ testResults }) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Sprawdź, czy istnieją jakiekolwiek wyniki w którymkolwiek z arkuszy
+  const hasResults = testResults && testResults.some(r => r.result && r.result.length > 0);
+
   const generateExcel = async () => {
-    if (!testResults) {
-      alert("Brak wyników do wyeksportowania.");
+    if (!hasResults) {
+      alert("Brak dostępnych wyników do wyeksportowania.");
       return;
     }
     setIsProcessing(true);
@@ -39,7 +42,7 @@ const ReportDownloader = ({ testResults }) => {
       <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center"><Download className="w-4 h-4 mr-2"/> Pobierz Raport</h3>
       <button
         onClick={generateExcel}
-        disabled={isProcessing || !testResults}
+        disabled={isProcessing || !hasResults}
         className="w-full flex items-center justify-center py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
         {isProcessing ? (

@@ -103,7 +103,7 @@ const TestConfigForm = ({ onSaveSuccess }) => {
     setIsSaving(true);
     
     try {
-      const response = await fetch('http://127.0.0.1:8000/save-test-config', {
+      const response = await fetch('http://localhost:8000/save-test-config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(testConfig), // Używamy aktualnego stanu z kontekstu (lub wygenerowanego)

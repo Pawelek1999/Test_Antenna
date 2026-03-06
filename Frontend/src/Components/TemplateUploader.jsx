@@ -5,7 +5,12 @@ import { FileUp, CheckCircle2 } from 'lucide-react';
 const TemplateUploader = ({ onUploadSuccess }) => {
   const [templateFile, setTemplateFile] = useState(null);
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles, fileRejections) => {
+    if (fileRejections.length > 0) {
+      alert("Nieprawidłowy plik. Proszę wgrać plik Excel (.xlsx).");
+      return;
+    }
+
     const file = acceptedFiles[0];
     setTemplateFile(file);
 

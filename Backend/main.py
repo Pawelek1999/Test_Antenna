@@ -10,8 +10,8 @@ import io
 from pathlib import Path
 import openpyxl
 import re
-from testowy import run_antenna_test  # Import funkcji testowej z testowy.py
-from test_state import TestState, RESULT_FILE
+from testowy import run_antenna_test
+from test_state import TestState
 from paths import CONFIG
 
 
@@ -39,6 +39,7 @@ RUNTIME_PARAMS_PATH = CONFIG / "runtime_params.json"
 HARDWARE_CONFIG_PATH = CONFIG / "hardware_config.json"
 TEST_CONFIG_PATH = CONFIG / "test_config.json"
 WE_CONFIG_PATH = CONFIG / "we_config.json"
+RESULT_FILE = CONFIG / "result.json"
 test_state = TestState()
 
 @app.post("/start-test")
@@ -46,12 +47,8 @@ async def start_test(background_tasks: BackgroundTasks):
     if test_state.is_active():
         return JSONResponse(status_code=409, content={"message": "Test jest już w toku."})
 
-    # Usuń stary plik wyników, jeśli istnieje
-    if os.path.exists(RESULT_FILE):
-        os.remove(RESULT_FILE)
-    
     test_state.start()
-    background_tasks.add_task(run_antenna_test, test_state)
+    background_tasks.add_task(run_antenna_test, test_state, RESULT_FILE)
     return {"message": "Test uruchomiony w tle"}
 
 @app.post("/stop-test")
@@ -65,7 +62,19 @@ async def stop_test():
 
 @app.get("/check-status")
 async def check_status():
-    return {"is_running": test_state.is_active(), "results_ready": os.path.exists(RESULT_FILE)}
+    results_ready = False
+    if os.path.exists(RESULT_FILE) and os.path.getsize(RESULT_FILE) > 0:
+        try:
+            with open(RESULT_FILE, 'r') as f:
+                data = json.load(f)
+                if isinstance(data, list) and data:
+                    # Sprawdź, czy którykolwiek arkusz ma wyniki w tablicy 'result'
+                    if any(item.get("result") and len(item.get("result")) > 0 for item in data):
+                        results_ready = True
+        except (json.JSONDecodeError, IOError):
+            results_ready = False
+            
+    return {"is_running": test_state.is_active(), "results_ready": results_ready}
 
 @app.get("/download-data")
 async def download_data():
@@ -89,19 +98,43 @@ async def get_frequencies():
     except json.JSONDecodeError:
         return []
  
-def _fill_workbook_with_results(workbook: openpyxl.Workbook, test_results: list):
-    """Helper function to populate an Excel workbook with test results."""
-    sheet = workbook.worksheets[0]  # Select the first sheet
+def _fill_workbook_with_results(workbook: openpyxl.Workbook, results_data: list):
+    """
+    Wypełnia skoroszyt wynikami dla wielu arkuszy.
+    Dopasowuje dane do arkusza Excel na podstawie pola 'sheet' w JSON.
+    Wypełnia również Antenę (H6) i Częstotliwość (H7).
+    """
+    for sheet_data in results_data:
+        sheet_identifier = sheet_data.get("sheet")
+        target_sheet = None
 
-    # --- Populate data ---
-    start_row = 22
-    for index, row_data in enumerate(test_results):
-        current_row = start_row + index
-        # Column mapping: E=5, F=6, G=7, H=8
-        sheet.cell(row=current_row, column=5).value = row_data.get("genPolarH_act")
-        sheet.cell(row=current_row, column=6).value = row_data.get("genPolarH_stop")
-        sheet.cell(row=current_row, column=7).value = row_data.get("genPolarV_act")
-        sheet.cell(row=current_row, column=8).value = row_data.get("genPolarV_stop")
+        # 1. Próba znalezienia arkusza po nazwie
+        if sheet_identifier and str(sheet_identifier) in workbook.sheetnames:
+            target_sheet = workbook[str(sheet_identifier)]
+        else:
+            # 2. Próba znalezienia po indeksie (jeśli sheet to np. "1", "2")
+            try:
+                idx = int(sheet_identifier) - 1  # Zakładamy indeksowanie od 1 w configu
+                if 0 <= idx < len(workbook.worksheets):
+                    target_sheet = workbook.worksheets[idx]
+            except (ValueError, TypeError):
+                pass
+        
+        if target_sheet:
+            # Wypełnij metadane (Antena, Częstotliwość) - kolumna H to index 8
+            target_sheet.cell(row=6, column=8).value = sheet_data.get("antenna", "")
+            target_sheet.cell(row=7, column=8).value = sheet_data.get("frequency_mhz", "")
+
+            # Wypełnij wyniki pomiarów
+            start_row = 22
+            for index, row_data in enumerate(sheet_data.get("result", [])):
+                current_row = start_row + index
+                target_sheet.cell(row=current_row, column=5).value = row_data.get("genPolarH_act")
+                target_sheet.cell(row=current_row, column=6).value = row_data.get("genPolarH_stop")
+                target_sheet.cell(row=current_row, column=7).value = row_data.get("genPolarV_act")
+                target_sheet.cell(row=current_row, column=8).value = row_data.get("genPolarV_stop")
+        else:
+            print(f"Pominięto dane dla arkusza '{sheet_identifier}' - nie znaleziono w szablonie.")
 
 
 def _generate_excel_response(workbook: openpyxl.Workbook) -> StreamingResponse:
@@ -185,6 +218,12 @@ async def upload_template(file: UploadFile = File(...)):
             frequencies_data.append(item)
             current_id += 1
 
+        if not frequencies_data:
+            raise HTTPException(
+                status_code=422,
+                detail="Nie udało się odczytać danych o częstotliwościach z pliku. Sprawdź, czy format pliku Excel jest zgodny z oczekiwanym szablonem (dane w kolumnach V-AD, nagłówki w kolumnie T)."
+            )
+
         # Zapisz nowe dane do pliku JSON
         with open(FREQUENCY_JSON_PATH, "w", encoding="utf-8") as f:
             json.dump(frequencies_data, f, indent=2, ensure_ascii=False)
@@ -201,21 +240,24 @@ async def upload_template(file: UploadFile = File(...)):
 @app.get("/generate-report")
 async def generate_report():
     """
-    Generuje raport Excel, używając wcześniej przesłanego szablonu (upload-template)
-    i wypełniając go aktualnymi wynikami testu.
+    Generuje raport Excel na podstawie szablonu i wyników.
+    Iteruje przez wszystkie konfiguracje w result.json i uzupełnia odpowiednie arkusze.
     """
-    if not os.path.exists(RESULT_FILE):
-        raise HTTPException(status_code=404, detail="Brak wyników testu do wyeksportowania.")
+    if not os.path.exists(RESULT_FILE) or os.path.getsize(RESULT_FILE) == 0:
+        raise HTTPException(status_code=404, detail="Brak pliku z wynikami (result.json) lub jest on pusty.")
 
     if not os.path.exists(UPLOADED_TEMPLATE_PATH):
         raise HTTPException(status_code=400, detail="Nie załadowano szablonu Excel. Przeciągnij plik w sekcji eksportu.")
 
-    with open(RESULT_FILE, "r") as f:
-        test_results = json.load(f)
+    with open(RESULT_FILE, "r", encoding="utf-8") as f:
+        results_data = json.load(f)
+
+    if not isinstance(results_data, list) or not results_data:
+        raise HTTPException(status_code=404, detail="Plik wyników ma niepoprawny format lub jest pusty.")
 
     try:
         workbook = openpyxl.load_workbook(UPLOADED_TEMPLATE_PATH)
-        _fill_workbook_with_results(workbook, test_results)
+        _fill_workbook_with_results(workbook, results_data)
         return _generate_excel_response(workbook)
 
     except Exception as e:
@@ -316,15 +358,31 @@ async def get_test_config():
 @app.post("/save-we-config")
 async def save_we_config(config: List[Dict[str, Any]]):
     """
-    Zapisuje scalony plik konfiguracyjny (we_config.json).
-    Oczekuje listy obiektów, gdzie każdy obiekt zawiera kompletne dane dla jednego arkusza.
+    Zapisuje scalony plik konfiguracyjny (we_config.json) oraz
+    tworzy pusty plik result.json na podstawie tej konfiguracji.
     """
     try:
-        # Zapisz do pliku we_config.json
+        # 1. Zapisz do pliku we_config.json
         with open(WE_CONFIG_PATH, "w", encoding="utf-8") as f:
             json.dump(config, f, indent=2)
         
-        return {"message": "Plik we_config.json został pomyślnie wygenerowany i zapisany."}
+        # 2. Utwórz strukturę dla pliku result.json
+        result_structure = []
+        for sheet_config in config:
+            freq_hz = sheet_config.get("test_params", {}).get("frequency_hz", 0)
+            result_structure.append({
+                "sheet": sheet_config.get("sheet"),
+                "id": sheet_config.get("id"),
+                "antenna": sheet_config.get("antenna", ""),
+                "frequency_mhz": freq_hz / 1000000.0,
+                "result": []
+            })
+        
+        # 3. Zapisz plik result.json
+        with open(RESULT_FILE, "w", encoding="utf-8") as f:
+            json.dump(result_structure, f, indent=2)
+            
+        return {"message": "Plik we_config.json został pomyślnie wygenerowany. Utworzono również result.json."}
     except Exception as e:
-        print(f"Błąd zapisu we_config: {e}")
+        print(f"Błąd zapisu we_config lub result.json: {e}")
         raise HTTPException(status_code=500, detail=f"Błąd zapisu pliku: {str(e)}")
